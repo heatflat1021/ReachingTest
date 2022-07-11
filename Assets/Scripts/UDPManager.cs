@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using System;
 using System.Net;
 using System.Net.Sockets; //UdpClient
 using System.Threading;
 using System.Threading.Tasks;
-using Ststem.Text;
+using System.Text;
 
 using UDPDataStructure;
 
@@ -49,7 +50,9 @@ public class UDPManager : MonoBehaviour
 
     public void Send()
     {
-        udpClient.Send("1:testtest");
+        string data = "0:testtest";
+        var msg = Encoding.UTF8.GetBytes(data);
+        udpClient.Send(msg, msg.Length);
     }
 
     private void ThreadReceive()
@@ -61,7 +64,7 @@ public class UDPManager : MonoBehaviour
                 IPEndPoint othersSenderIPE = null;
                 byte[] receivedBytes = udpClient.Receive(ref othersSenderIPE);
                 string[] receivedData = Encoding.ASCII.GetString(receivedBytes).Split(':');
-                if (Int32.Parse(receivedData[0]) == UDP_DATA_TYPE.PROGRESS)
+                if (Int32.Parse(receivedData[0]) == (int)UDP_DATA_TYPE.PROGRESS)
                 {
                     Debug.Log(receivedData[1]);
                 }

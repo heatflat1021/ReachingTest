@@ -36,6 +36,12 @@ public class GameManager : MonoBehaviour
         {
             myPlayerManager.CalibrateCamera();
         }
+        if (Input.GetKeyUp(KeyCode.C))
+        {
+            GameObject udpManagerObject = GameObject.Find("UDPManager");
+            UDPManager udpManager = udpManagerObject.GetComponent<UDPManager>();
+            udpManager.udpCommunicationFlag = true;
+        }
     }
 
     private void SpawnPlayers()

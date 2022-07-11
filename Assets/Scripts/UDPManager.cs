@@ -27,6 +27,9 @@ public class UDPManager : MonoBehaviour
 
     private UdpClient udpClient;
     private SynchronizationContext mainContext;
+
+    [HideInInspector]
+    public bool udpCommunicationFlag = false;
     
     // Start is called before the first frame update
     void Start()
@@ -45,20 +48,25 @@ public class UDPManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Send();
+        if (udpCommunicationFlag)
+        {
+            Send();
+        }
     }
 
     public void Send()
     {
+        Debug.Log("Sending");
         string data = "0:testtest";
         var msg = Encoding.UTF8.GetBytes(data);
-        udpClient.Send(msg, msg.Length);
+        udpClient.SendAsync(msg, msg.Length);
     }
 
     private void ThreadReceive()
     {
         while (true)
         {
+            Debug.Log(udpClient.Available);
             if (udpClient.Available > 0)
             {
                 IPEndPoint othersSenderIPE = null;

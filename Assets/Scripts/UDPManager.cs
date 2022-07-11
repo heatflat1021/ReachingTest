@@ -8,6 +8,7 @@ using System.Net.Sockets; //UdpClient
 using System.Threading;
 using System.Threading.Tasks;
 using System.Text;
+using Cysharp.Threading.Tasks;
 
 using UDPDataStructure;
 
@@ -42,7 +43,9 @@ public class UDPManager : MonoBehaviour
         udpClient.Client.ReceiveTimeout = 1000;
         udpClient.Connect(otherIPv4, otherReceiverPort);
 
-        Task.Run(() => ThreadReceive());
+        CancellationToken cancellationToken = this.GetCancellationTokenOnDestroy();
+        Task.Run(() => ThreadReceive(), cancellationToken);
+
     }
 
     // Update is called once per frame

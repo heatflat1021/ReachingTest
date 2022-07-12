@@ -72,12 +72,12 @@ public class UIManager : MonoBehaviour
         timeText.text = DateTime.Now.ToString("HH:mm:ss");
     }
 
-    public void OthersAccumulatedDistance(float othersAccumulatedDistance)
+    public void UpdateOthersAccumulatedDistance(float othersAccumulatedDistance)
     {
         othersAccumulatedDistanceText.text = othersAccumulatedDistance.ToString("F1");
     }
 
-    public void OthersAccumulatedProgress(float othersAccumulatedProgress)
+    public void UpdateOthersAccumulatedProgress(float othersAccumulatedProgress)
     {
         othersAccumulatedProgressText.text = othersAccumulatedProgress.ToString("F1");
     }

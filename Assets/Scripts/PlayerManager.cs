@@ -64,13 +64,15 @@ public class PlayerManager : MonoBehaviour
         if (isMyPlayerManager)
         {
             // UIÇÃçXêV
-            int nextOtherPlayerID = ((playerID + 1) % GameManager.Instance.PlayerSpawnNumber) + 1;
+            int nextOtherPlayerID = ((playerID + 1) <= GameManager.Instance.PlayerSpawnNumber) ? (playerID+1) : (playerID + 1) % GameManager.Instance.PlayerSpawnNumber;
             TrackerInfo nextOthersTrackerInfo = OthersTrackerManager.GetTrackerInfo(nextOtherPlayerID);
             uiManager.UpdateProgress(progress);
             uiManager.UpdateAccumulatedDistance(accumulatedDistance);
             uiManager.UpdateAccumulatedProgress(accumulatedProgress);
             uiManager.UpdateDuration();
             uiManager.UpdateTime();
+            uiManager.UpdateOthersAccumulatedDistance(nextOthersTrackerInfo.accumulatedDistance);
+            uiManager.UpdateOthersAccumulatedProgress(nextOthersTrackerInfo.accumulatedProgress);
 
             udpManager.Send(playerID + ":" + (int)TrackerInfoType.Progress + ":" + progress);
             udpManager.Send(playerID + ":" + (int)TrackerInfoType.AccumulatedDistance + ":" + accumulatedDistance);

@@ -1,18 +1,42 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
-public class SingletonMonoBehaviour : MonoBehaviour
+public abstract class SingletonMonoBehaviour<T> : MonoBehaviour where T : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private static T instance;
+    public static T Instance
     {
-        
+        get
+        {
+            if (instance == null)
+            {
+                Type t = typeof(T);
+
+                instance = (T)FindObjectOfType(t);
+                if (instance == null)
+                {
+                    Debug.LogError(t + " をアタッチしているGameObjectはありません");
+                }
+            }
+
+            return instance;
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    virtual protected void Awake()
     {
-        
+
+        if (this != Instance)
+        {
+            Destroy(this);
+            Debug.LogError(
+                typeof(T) +
+                " は既に他のGameObjectにアタッチされているため、コンポーネントを破棄しました." +
+                " アタッチされているGameObjectは " + Instance.gameObject.name + " です.");
+            return;
+        }
+
+        DontDestroyOnLoad(this.gameObject);
     }
+
 }

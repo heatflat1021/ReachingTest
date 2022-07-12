@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class UIManager : MonoBehaviour
 {
@@ -11,20 +12,36 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     Image knifeProgressBar;
 
+    [SerializeField]
+    Text accumulatedDistanceText;
+
+    [SerializeField]
+    Text accumulatedProgressText;
+
+    [SerializeField]
+    Text durationText;
+
+    [SerializeField]
+    Text timeText;
+
+    [SerializeField]
+    Text othersAccumulatedDistanceText;
+
+    [SerializeField]
+    Text othersAccumulatedProgressText;
+
+    private DateTime startTime;
+
+    void Start()
+    {
+        startTime = DateTime.Now;
+    }
+
     public void UpdateProgress(float progress)
     {
-        UpdateProgressText(progress);
-        UpdateProgressBar(progress);
-    }
-
-    private void UpdateProgressText(float progress)
-    {
         progressText.text = (progress * 100).ToString("F0");
-    }
 
-    private void UpdateProgressBar(float progress)
-    {
-        if (progress > 0.97f)
+        if (progress > 0.98f)
         {
             knifeProgressBar.fillAmount = 1;
         }
@@ -32,5 +49,36 @@ public class UIManager : MonoBehaviour
         {
             knifeProgressBar.fillAmount = Mathf.Sqrt(progress);
         }
+    }
+
+    public void UpdateAccumulatedDistance(float accumulatedDistance)
+    {
+        accumulatedDistanceText.text = accumulatedDistance.ToString("F1");
+    }
+
+    public void UpdateAccumulatedProgress(float accumulatedProgress)
+    {
+        accumulatedProgressText.text = accumulatedProgress.ToString("F1");
+    }
+
+    public void UpdateDuration()
+    {
+        int seconds = (int)((DateTime.Now - startTime).TotalSeconds);
+        durationText.text = $"{seconds / 60}•ª {seconds % 60}•b";
+    }
+
+    public void UpdateTime()
+    {
+        timeText.text = DateTime.Now.ToString("HH:mm:ss");
+    }
+
+    public void OthersAccumulatedDistance(float othersAccumulatedDistance)
+    {
+        othersAccumulatedDistanceText.text = othersAccumulatedDistance.ToString("F1");
+    }
+
+    public void OthersAccumulatedProgress(float othersAccumulatedProgress)
+    {
+        othersAccumulatedProgressText.text = othersAccumulatedProgress.ToString("F1");
     }
 }

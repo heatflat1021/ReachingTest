@@ -26,9 +26,17 @@ public class OthersTrackerManager : ITrackingSource
         }
 
         TrackerInfo trackerInfo = othersTrackerInfo[playerID];
-
         trackerInfo.SetValue(trackerInfoType, value);
-        
+    }
+
+    public static TrackerInfo GetTrackerInfo(int playerID)
+    {
+        if (!othersTrackerInfo.ContainsKey(playerID))
+        {
+            return null;
+        }
+
+        return othersTrackerInfo[playerID];
     }
 
     public Vector3 BaseTrackerPosition()

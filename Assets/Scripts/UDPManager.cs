@@ -4,7 +4,7 @@ using UnityEngine;
 
 using System;
 using System.Net;
-using System.Net.Sockets; //UdpClient
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Text;
@@ -25,20 +25,15 @@ public class UDPManager : MonoBehaviour
     private int otherReceiverPort = 22223;
 
     private UdpClient udpClient;
-    private SynchronizationContext mainContext;
 
     [HideInInspector]
     public bool udpCommunicationFlag = false;
 
-    // CancellationToken cancellationTokenSource = new CancellationTokenSource();
     private Subject<string> subject = new Subject<string>();
-    // [SerializeField] Text message;
 
     // Start is called before the first frame update
     void Start()
     {
-        mainContext = SynchronizationContext.Current;
-
         IPAddress myIP = IPAddress.Parse(myIPv4);
         IPEndPoint mySenderIPE = new IPEndPoint(myIP, mySenderPort);
         udpClient = new UdpClient(mySenderIPE);
@@ -52,7 +47,10 @@ public class UDPManager : MonoBehaviour
                 string[] receivedData = msg.Split(':');
                 switch ((TrackerInfoType)Enum.ToObject(typeof(TrackerInfoType), Int32.Parse(receivedData[1])))
                 {
+                    // floatÇ…ïœä∑Ç∑ÇÈÉpÉ^Å[Éì
                     case TrackerInfoType.Progress:
+                    case TrackerInfoType.AccumulatedDistance:
+                    case TrackerInfoType.AccumulatedProgress:
                         OthersTrackerManager.SetTrackerInfo(Int32.Parse(receivedData[0]), (TrackerInfoType)Enum.ToObject(typeof(TrackerInfoType), Int32.Parse(receivedData[1])), float.Parse(receivedData[2]));
                         break;
                 }

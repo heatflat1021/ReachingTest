@@ -2,17 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class GameManager : SingletonMonoBehaviour<GameManager>
 {
     [SerializeField]
-    int PLAYER_SPAWN_NUMBER;
+    [Tooltip("プレイヤーの数"), Range(1, 8)]
+    private int PLAYER_SPAWN_NUMBER;
+    public int PlayerSpawnNumber
+    {
+        get
+        {
+            return PLAYER_SPAWN_NUMBER;
+        }
+    }
 
     [SerializeField]
-    int playerID;
+    [Tooltip("自分のプレイヤーID"), Range(1, 8)]
+    int myPlayerID;
 
     private static readonly Vector3 PLAYER_INITIAL_SPAWN_POSITION = new Vector3(-2.366f, 0.909f, 0.980f);
     private static readonly Vector3 PLAYER_SPAWN_DISTANCE = new Vector3(-0.700f, 0f, 0f);
     private static readonly Quaternion PLAYER_SPAWN_DIRECTION = Quaternion.AngleAxis(180, Vector3.up);
+    private static readonly Vector3 MIRROR_RELATIVE_POSITION = new Vector3(0.5f, 2.2f, 0);
 
     private GameObject myPlayer;
     private PlayerManager myPlayerManager;
@@ -55,7 +65,7 @@ public class GameManager : MonoBehaviour
             PlayerManager playerManager = player.GetComponent<PlayerManager>();
             playerManager.playerID = i + 1;
 
-            if (i+1 == playerID)
+            if (i+1 == myPlayerID)
             {
                 playerManager.isMyPlayerManager = true;
 
@@ -69,6 +79,9 @@ public class GameManager : MonoBehaviour
             else
             {
                 playerManager.trackingSource = new OthersTrackerManager(i+1);
+                
+                GameObject canvas = player.transform.Find("Canvas").gameObject;
+                canvas.SetActive(false);
             }
 
             player.transform.localPosition = spawnPosition;

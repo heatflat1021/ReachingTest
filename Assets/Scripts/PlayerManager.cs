@@ -48,6 +48,8 @@ public class PlayerManager : MonoBehaviour
     void Update()
     {
         float progress = trackingSource.GetProgress();
+        float accumulatedDistance = trackingSource.GetAccumulatedDistance();
+        float accumulatedProgress = trackingSource.GetAccumulatedProgress();
 
         if (trackingSource.GetAccumulatedProgress() > 10)
         {
@@ -59,11 +61,20 @@ public class PlayerManager : MonoBehaviour
         MoveHands(progress);
         MoveKnife(progress);
 
-        uiManager.UpdateProgress(progress);
-
         if (isMyPlayerManager)
         {
+            // UIÇÃçXêV
+            int nextOtherPlayerID = ((playerID + 1) % GameManager.Instance.PlayerSpawnNumber) + 1;
+            TrackerInfo nextOthersTrackerInfo = OthersTrackerManager.GetTrackerInfo(nextOtherPlayerID);
+            uiManager.UpdateProgress(progress);
+            uiManager.UpdateAccumulatedDistance(accumulatedDistance);
+            uiManager.UpdateAccumulatedProgress(accumulatedProgress);
+            uiManager.UpdateDuration();
+            uiManager.UpdateTime();
+
             udpManager.Send(playerID + ":" + (int)TrackerInfoType.Progress + ":" + progress);
+            udpManager.Send(playerID + ":" + (int)TrackerInfoType.AccumulatedDistance + ":" + accumulatedDistance);
+            udpManager.Send(playerID + ":" + (int)TrackerInfoType.AccumulatedProgress + ":" + accumulatedProgress);
         }
     }
 

@@ -15906,7 +15906,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1871084912
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15923,6 +15923,7 @@ MonoBehaviour:
   otherIPv4: 192.168.12.8
   mySenderPort: 22222
   otherReceiverPort: 22223
+  udpCommunicationFlag: 0
 --- !u!4 &1871084913
 Transform:
   m_ObjectHideFlags: 0

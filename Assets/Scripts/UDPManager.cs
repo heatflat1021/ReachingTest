@@ -8,7 +8,7 @@ using System.Net.Sockets; //UdpClient
 using System.Threading;
 using System.Threading.Tasks;
 using System.Text;
-using Cysharp.Threading.Tasks;
+using UniRx;
 
 using UDPDataStructure;
 
@@ -31,7 +31,11 @@ public class UDPManager : MonoBehaviour
 
     [HideInInspector]
     public bool udpCommunicationFlag = false;
-    
+
+    // CancellationToken cancellationTokenSource = new CancellationTokenSource();
+    private Subject<string> subject = new Subject<string>();
+    // [SerializeField] Text message;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -43,8 +47,14 @@ public class UDPManager : MonoBehaviour
         udpClient.Client.ReceiveTimeout = 1000;
         udpClient.Connect(otherIPv4, otherReceiverPort);
 
-        CancellationToken cancellationToken = this.GetCancellationTokenOnDestroy();
-        Task.Run(() => ThreadReceive(), cancellationToken);
+        udpClient.BeginReceive(OnReceived, udpClient);
+        subject
+            .ObserveOnMainThread()
+            .Subscribe(msg => {
+                // message.text = msg;
+                Debug.Log(msg);
+            }).AddTo(this);
+        // Task.Run(() => ThreadReceive(), cancellationTokenSource);
 
     }
 
@@ -65,6 +75,19 @@ public class UDPManager : MonoBehaviour
         udpClient.SendAsync(msg, msg.Length);
     }
 
+    private void OnReceived(System.IAsyncResult result)
+    {
+        UdpClient getUdp = (UdpClient)result.AsyncState;
+        IPEndPoint ipEnd = null;
+
+        byte[] getByte = getUdp.EndReceive(result, ref ipEnd);
+
+        var message = Encoding.UTF8.GetString(getByte);
+        subject.OnNext(message);
+
+        getUdp.BeginReceive(OnReceived, getUdp);
+    }
+
     private void ThreadReceive()
     {
         while (true)
@@ -81,5 +104,10 @@ public class UDPManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void OnDestroy()
+    {
+        udpClient.Close();
     }
 }

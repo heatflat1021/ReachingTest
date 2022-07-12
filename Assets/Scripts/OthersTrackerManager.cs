@@ -57,19 +57,7 @@ public class OthersTrackerManager : ITrackingSource
     public float GetProgress()
     {
         TrackerInfo trackerInfo = othersTrackerInfo[playerID];
-        float progress = 1.0f - (((trackerInfo.handTrackerPosition - trackerInfo.baseTrackerPosition).magnitude - trackerInfo.calibratedMinDistance) / (trackerInfo.calibratedMaxDistance - trackerInfo.calibratedMinDistance));
-
-        if (progress < 0.0f)
-        {
-            progress = 0.0f;
-        }
-
-        if (progress > 1.0f)
-        {
-            progress = 1.0f;
-        }
-
-        return progress;
+        return trackerInfo.progress;
     }
 
     public float GetAccumulatedDistance()

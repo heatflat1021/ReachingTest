@@ -91,19 +91,19 @@ public class TrackerInfo
                 this._handTrackerPosition = (Vector3)value;
                 break;
             case TrackerInfoType.CalibratedMinDistance:
-                this.calibratedMinDistance = (float)value;
+                this.calibratedMinDistance = System.Convert.ToSingle(value);
                 break;
             case TrackerInfoType.CalibratedMaxDistance:
-                this.calibratedMaxDistance = (float)value;
+                this.calibratedMaxDistance = System.Convert.ToSingle(value);
                 break;
             case TrackerInfoType.Progress:
-                this.progress = (float)value;
+                this.progress = System.Convert.ToSingle(value);
                 break;
             case TrackerInfoType.AccumulatedDistance:
-                this._accumulatedDistance = (float)value;
+                this._accumulatedDistance = System.Convert.ToSingle(value);
                 break;
             case TrackerInfoType.AccumulatedProgress:
-                this._accumulatedProgress = (float)value;
+                this._accumulatedProgress = System.Convert.ToSingle(value);
                 break;
         }
     }

@@ -10,8 +10,6 @@ using System.Threading.Tasks;
 using System.Text;
 using UniRx;
 
-using UDPDataStructure;
-
 public class UDPManager : MonoBehaviour
 {
     [SerializeField]
@@ -51,6 +49,13 @@ public class UDPManager : MonoBehaviour
         subject
             .ObserveOnMainThread()
             .Subscribe(msg => {
+                string[] receivedData = msg.Split(':');
+                switch ((TrackerInfoType)Enum.ToObject(typeof(TrackerInfoType), Int32.Parse(receivedData[1])))
+                {
+                    case TrackerInfoType.Progress:
+                        OthersTrackerManager.SetTrackerInfo(Int32.Parse(receivedData[0]), (TrackerInfoType)Enum.ToObject(typeof(TrackerInfoType), Int32.Parse(receivedData[1])), Int32.Parse(receivedData[2]));
+                        break;
+                }
                 Debug.Log(msg);
             }).AddTo(this);
 
@@ -82,24 +87,6 @@ public class UDPManager : MonoBehaviour
         subject.OnNext(message);
 
         getUdp.BeginReceive(OnReceived, getUdp);
-    }
-
-    private void ThreadReceive()
-    {
-        while (true)
-        {
-            Debug.Log(udpClient.Available);
-            if (udpClient.Available > 0)
-            {
-                IPEndPoint othersSenderIPE = null;
-                byte[] receivedBytes = udpClient.Receive(ref othersSenderIPE);
-                string[] receivedData = Encoding.ASCII.GetString(receivedBytes).Split(':');
-                if (Int32.Parse(receivedData[0]) == (int)UDP_DATA_TYPE.PROGRESS)
-                {
-                    Debug.Log(receivedData[1]);
-                }
-            }
-        }
     }
 
     private void OnDestroy()

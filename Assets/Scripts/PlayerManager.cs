@@ -63,7 +63,7 @@ public class PlayerManager : MonoBehaviour
 
         if (isMyPlayerManager)
         {
-            udpManager.Send(playerID + ":" + 0 + ":" + progress);
+            udpManager.Send(playerID + ":" + (int)TrackerInfoType.Progress + ":" + progress);
         }
     }
 

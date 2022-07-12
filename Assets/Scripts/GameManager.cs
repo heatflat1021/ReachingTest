@@ -57,6 +57,8 @@ public class GameManager : MonoBehaviour
 
             if (i+1 == playerID)
             {
+                playerManager.isMyPlayerManager = true;
+
                 MountPlayer(player);
                 player.gameObject.AddComponent<MyTrackerManager>();
                 playerManager.trackingSource = player.gameObject.GetComponent<MyTrackerManager>();

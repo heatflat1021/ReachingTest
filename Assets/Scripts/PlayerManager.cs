@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
+    public bool isMyPlayerManager = false;
     public int playerID = 0;
 
     public int knifeID = 1;
@@ -60,7 +61,10 @@ public class PlayerManager : MonoBehaviour
 
         uiManager.UpdateProgress(progress);
 
-        udpManager.Send(playerID + ":" + 0 + progress);
+        if (isMyPlayerManager)
+        {
+            udpManager.Send(playerID + ":" + 0 + ":" + progress);
+        }
     }
 
     public void CalibrateCamera()

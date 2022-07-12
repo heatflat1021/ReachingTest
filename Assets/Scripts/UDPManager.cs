@@ -51,28 +51,24 @@ public class UDPManager : MonoBehaviour
         subject
             .ObserveOnMainThread()
             .Subscribe(msg => {
-                // message.text = msg;
                 Debug.Log(msg);
             }).AddTo(this);
-        // Task.Run(() => ThreadReceive(), cancellationTokenSource);
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (udpCommunicationFlag)
-        {
-            Send();
-        }
+
     }
 
-    public void Send()
+    public void Send(string data)
     {
-        Debug.Log("Sending");
-        string data = "0:testtest";
-        var msg = Encoding.UTF8.GetBytes(data);
-        udpClient.SendAsync(msg, msg.Length);
+        if (udpCommunicationFlag)
+        {
+            var msg = Encoding.UTF8.GetBytes(data);
+            udpClient.SendAsync(msg, msg.Length);
+        }
     }
 
     private void OnReceived(System.IAsyncResult result)

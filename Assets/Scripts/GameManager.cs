@@ -53,6 +53,7 @@ public class GameManager : MonoBehaviour
             player.name = $"Player_{i + 1}";
             player = Instantiate(player, spawnPosition, PLAYER_SPAWN_DIRECTION) as GameObject;
             PlayerManager playerManager = player.GetComponent<PlayerManager>();
+            playerManager.playerID = i + 1;
 
             if (i+1 == playerID)
             {

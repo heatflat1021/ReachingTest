@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
+    public int playerID = 0;
+
     public int knifeID = 1;
     public ITrackingSource trackingSource;
     public IScoreManager scoreManager;
@@ -26,6 +28,8 @@ public class PlayerManager : MonoBehaviour
 
     private UIManager uiManager;
 
+    private UDPManager udpManager;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,6 +38,9 @@ public class PlayerManager : MonoBehaviour
 
         GameObject canvas = transform.Find("Canvas").gameObject;
         uiManager = canvas.GetComponent<UIManager>();
+
+        GameObject udpManagerObject = GameObject.Find("UDPManager");
+        udpManager = udpManagerObject.GetComponent<UDPManager>();
     }
 
     // Update is called once per frame
@@ -52,6 +59,8 @@ public class PlayerManager : MonoBehaviour
         MoveKnife(progress);
 
         uiManager.UpdateProgress(progress);
+
+        udpManager.Send(playerID + ":" + 0 + progress);
     }
 
     public void CalibrateCamera()

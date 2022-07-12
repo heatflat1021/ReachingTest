@@ -53,7 +53,7 @@ public class UDPManager : MonoBehaviour
                 switch ((TrackerInfoType)Enum.ToObject(typeof(TrackerInfoType), Int32.Parse(receivedData[1])))
                 {
                     case TrackerInfoType.Progress:
-                        OthersTrackerManager.SetTrackerInfo(Int32.Parse(receivedData[0]), (TrackerInfoType)Enum.ToObject(typeof(TrackerInfoType), Int32.Parse(receivedData[1])), Int32.Parse(receivedData[2]));
+                        OthersTrackerManager.SetTrackerInfo(Int32.Parse(receivedData[0]), (TrackerInfoType)Enum.ToObject(typeof(TrackerInfoType), Int32.Parse(receivedData[1])), float.Parse(receivedData[2]));
                         break;
                 }
                 Debug.Log(msg);

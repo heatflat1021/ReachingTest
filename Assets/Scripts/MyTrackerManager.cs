@@ -28,7 +28,7 @@ public class MyTrackerManager : SingletonMonoBehaviour<MyTrackerManager>, ITrack
 
         float distance = (baseTrackerPosition - handTrackerPosition).magnitude;
         float previousDistance = (trackerInfo.baseTrackerPositionHistory.Peek() - trackerInfo.handTrackerPositionHistory.Peek()).magnitude;
-        trackerInfo.AddAccumulatedDistance(Math.Abs(distance - previousDistance));
+        float distanceDifference = Math.Abs(distance - previousDistance);
 
         float previousProgress = trackerInfo.progress;
         float progress = 1.0f - ((distance - trackerInfo.calibratedMinDistance) / (trackerInfo.calibratedMaxDistance - trackerInfo.calibratedMinDistance));
@@ -41,7 +41,13 @@ public class MyTrackerManager : SingletonMonoBehaviour<MyTrackerManager>, ITrack
             progress = 1.0f;
         }
         trackerInfo.SetValue(TrackerInfoType.Progress, progress);
-        trackerInfo.AddAccumulatedProgress(Math.Abs(progress - previousProgress));
+
+        // 移動量が設定した閾値以上の場合のみ総移動距離・総移動回数を更新
+        if (distanceDifference > ConfigManager.Instance.GetTrackerSensitivityThreshold())
+        {
+            trackerInfo.AddAccumulatedDistance(Math.Abs(distance - previousDistance));
+            trackerInfo.AddAccumulatedProgress(Math.Abs(progress - previousProgress));
+        }
     }
 
     public Vector3 BaseTrackerPosition()

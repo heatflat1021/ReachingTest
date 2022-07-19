@@ -11,19 +11,24 @@ public class PlayerManager : MonoBehaviour
     public ITrackingSource trackingSource;
     public IScoreManager scoreManager;
 
-    private readonly Vector3 InitialHandsPosition = new Vector3(0, 0.44f, 1.42f);
+    [Space(20)]
+    [SerializeField]
+    GameObject headDirection;
+
+    private readonly Vector3 InitialHandsPosition = new Vector3(0, 0, 1.42f);
     private readonly Vector3 InitialHandsRotation = new Vector3(17.3f, 0, 0);
-    private readonly Vector3 InitialKnifePosition = new Vector3(0.19f, 0.11f, 1.5f);
+    private readonly Vector3 InitialKnifePosition = new Vector3(0.19f, 0.04f, 1.5f);
     private readonly Vector3 InitialKnifeRotation = new Vector3(-90, -90, -180);
 
     private const int StandardCameraRigDirectionOffsetY = -720;
-    private readonly Vector3 StandardCameraRigPositionOffset = new Vector3(0, 0.4f, 0);
+    private readonly Vector3 StandardCameraRigPositionOffset = new Vector3(0, 0.5f, -0.2f);
 
     private readonly Vector3 MaxMoveDistance = new Vector3(0, 0, 0.9f);
 
     private GameObject hands;
     private GameObject leftHand;
     private GameObject rightHand;
+    //public GameObject neck;
     private GameObject knife;
     private GameObject uiCanvas;
 
@@ -50,6 +55,7 @@ public class PlayerManager : MonoBehaviour
         float progress = trackingSource.GetProgress();
         float accumulatedDistance = trackingSource.GetAccumulatedDistance();
         float accumulatedProgress = trackingSource.GetAccumulatedProgress();
+        float hmdDirection = trackingSource.GetHMDDirection();
 
         if (trackingSource.GetAccumulatedProgress() > 10)
         {
@@ -57,9 +63,10 @@ public class PlayerManager : MonoBehaviour
             particle.SetActive(true);
         }
 
-
+        // アバターの操作
         MoveHands(progress);
         MoveKnife(progress);
+        MoveHead(hmdDirection);
 
         if (isMyPlayerManager)
         {
@@ -74,9 +81,11 @@ public class PlayerManager : MonoBehaviour
             uiManager.UpdateOthersAccumulatedDistance(nextOthersTrackerInfo.accumulatedDistance);
             uiManager.UpdateOthersAccumulatedProgress(nextOthersTrackerInfo.accumulatedProgress);
 
+            // データの送信
             udpManager.Send(playerID + ":" + (int)TrackerInfoType.Progress + ":" + progress);
             udpManager.Send(playerID + ":" + (int)TrackerInfoType.AccumulatedDistance + ":" + accumulatedDistance);
             udpManager.Send(playerID + ":" + (int)TrackerInfoType.AccumulatedProgress + ":" + accumulatedProgress);
+            udpManager.Send(playerID + ":" + (int)TrackerInfoType.HMDDirection + ":" + hmdDirection);
         }
     }
 
@@ -121,5 +130,11 @@ public class PlayerManager : MonoBehaviour
     private void MoveKnife(float progress)
     {
         knife.transform.localPosition = InitialKnifePosition + MaxMoveDistance * progress;
+    }
+
+    private void MoveHead(float direction)
+    {
+        headDirection.transform.localRotation = Quaternion.Euler(new Vector3(0, -direction * 80, 0));
+        Debug.Log(direction);
     }
 }

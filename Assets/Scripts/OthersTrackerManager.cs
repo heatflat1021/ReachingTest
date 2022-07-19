@@ -80,6 +80,12 @@ public class OthersTrackerManager : ITrackingSource
         return trackerInfo.accumulatedProgress;
     }
 
+    public float GetHMDDirection()
+    {
+        TrackerInfo trackerInfo = othersTrackerInfo[playerID];
+        return trackerInfo.hmdDirection;
+    }
+
     private Vector3 Clone(Vector3 vector3)
     {
         return new Vector3(vector3.x, vector3.y, vector3.z);

@@ -70,6 +70,9 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
                 playerManager.isMyPlayerManager = true;
 
                 MountPlayer(player);
+
+                DeleteHeadRendering(player);
+
                 player.gameObject.AddComponent<MyTrackerManager>();
                 playerManager.trackingSource = player.gameObject.GetComponent<MyTrackerManager>();
 
@@ -97,5 +100,15 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         cameraRig.transform.SetParent(mountTarget.transform, true);
         cameraRig.transform.localPosition = new Vector3(0, 0, 0);
         cameraRig.transform.localRotation = Quaternion.identity;
+    }
+
+    private void DeleteHeadRendering(GameObject player)
+    {
+        GameObject face = player.transform.Find("Avatar/Face").gameObject;
+        SkinnedMeshRenderer faceRenderer = face.GetComponent<SkinnedMeshRenderer>();
+        faceRenderer.enabled = false;
+        GameObject hair = player.transform.Find("Avatar/Hair").gameObject;
+        SkinnedMeshRenderer hairRenderer = hair.GetComponent<SkinnedMeshRenderer>();
+        hairRenderer.enabled = false;
     }
 }

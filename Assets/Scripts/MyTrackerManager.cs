@@ -12,10 +12,13 @@ public class MyTrackerManager : SingletonMonoBehaviour<MyTrackerManager>, ITrack
     private TrackerInfo trackerInfo = new TrackerInfo();
 
     private SteamVR_Action_Pose trackers = SteamVR_Actions.default_Pose;
+    private List<XRNodeState> DevStat;
 
 
     // Start is called before the first frame update
-    void Start() { }
+    void Start() {
+        DevStat = new List<XRNodeState>();
+    }
 
     // Update is called once per frame
     void Update()
@@ -47,6 +50,17 @@ public class MyTrackerManager : SingletonMonoBehaviour<MyTrackerManager>, ITrack
         {
             trackerInfo.AddAccumulatedDistance(Math.Abs(distance - previousDistance));
             trackerInfo.AddAccumulatedProgress(Math.Abs(progress - previousProgress));
+        }
+
+        Quaternion hmdRotation;
+        InputTracking.GetNodeStates(DevStat);
+        foreach (XRNodeState s in DevStat)
+        {
+            if (s.nodeType == XRNode.Head)
+            {
+                s.TryGetRotation(out hmdRotation);
+                trackerInfo.SetValue(TrackerInfoType.HMDDirection, hmdRotation.y);
+            }
         }
     }
 
@@ -84,6 +98,11 @@ public class MyTrackerManager : SingletonMonoBehaviour<MyTrackerManager>, ITrack
     public float GetAccumulatedProgress()
     {
         return trackerInfo.accumulatedProgress;
+    }
+
+    public float GetHMDDirection()
+    {
+        return trackerInfo.hmdDirection;
     }
 
     private Vector3 Clone(Vector3 vector3)

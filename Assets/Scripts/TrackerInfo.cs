@@ -11,6 +11,7 @@ public enum TrackerInfoType
     Progress,
     AccumulatedDistance,
     AccumulatedProgress,
+    HMDDirection,
 }
 
 public class TrackerInfo
@@ -22,6 +23,7 @@ public class TrackerInfo
     public float progress;
     private float _accumulatedDistance;
     private float _accumulatedProgress;
+    private float _hmdDirection;
 
     public Queue<Vector3> baseTrackerPositionHistory;
     public Queue<Vector3> handTrackerPositionHistory;
@@ -38,6 +40,7 @@ public class TrackerInfo
         this._accumulatedProgress = 0;
         this.baseTrackerPositionHistory = new Queue<Vector3>();
         this.handTrackerPositionHistory = new Queue<Vector3>();
+        this._hmdDirection = 0;
     }
 
     public Vector3 baseTrackerPosition
@@ -80,6 +83,11 @@ public class TrackerInfo
         get { return _accumulatedProgress; }
     }
 
+    public float hmdDirection
+    {
+        get { return _hmdDirection; }
+    }
+
     public void SetValue(TrackerInfoType trackerInfoType, object value)
     {
         switch (trackerInfoType)
@@ -104,6 +112,9 @@ public class TrackerInfo
                 break;
             case TrackerInfoType.AccumulatedProgress:
                 this._accumulatedProgress = System.Convert.ToSingle(value);
+                break;
+            case TrackerInfoType.HMDDirection:
+                this._hmdDirection = System.Convert.ToSingle(value);
                 break;
         }
     }

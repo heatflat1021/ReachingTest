@@ -17,4 +17,6 @@ public interface ITrackingSource
     public float GetAccumulatedDistance();
 
     public float GetAccumulatedProgress();
+
+    public float GetHMDDirection();
 }

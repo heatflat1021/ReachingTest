@@ -51,6 +51,7 @@ public class UDPManager : MonoBehaviour
                     case TrackerInfoType.Progress:
                     case TrackerInfoType.AccumulatedDistance:
                     case TrackerInfoType.AccumulatedProgress:
+                    case TrackerInfoType.HMDDirection:
                         OthersTrackerManager.SetTrackerInfo(Int32.Parse(receivedData[0]), (TrackerInfoType)Enum.ToObject(typeof(TrackerInfoType), Int32.Parse(receivedData[1])), float.Parse(receivedData[2]));
                         break;
                 }

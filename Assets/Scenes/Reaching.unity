@@ -15963,8 +15963,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f28a6d9790c53243a3a1601b0164a31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myIPv4: 192.168.12.15
-  otherIPv4: 192.168.12.8
+  myIPv4: 192.168.10.101
+  otherIPv4: 192.168.10.102
   mySenderPort: 22222
   otherReceiverPort: 22223
   udpCommunicationFlag: 0

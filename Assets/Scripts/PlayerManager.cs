@@ -57,7 +57,7 @@ public class PlayerManager : MonoBehaviour
         float accumulatedProgress = trackingSource.GetAccumulatedProgress();
         float hmdDirection = trackingSource.GetHMDDirection();
 
-        if (trackingSource.GetAccumulatedProgress() > 10)
+        if (accumulatedProgress > 10)
         {
             GameObject particle = knife.transform.Find("Particle").gameObject;
             particle.SetActive(true);

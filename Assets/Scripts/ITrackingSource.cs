@@ -12,6 +12,8 @@ public interface ITrackingSource
 
     public void CalibrateMaxDistance();
 
+    public void CalibrateCameraDirection();
+
     public float GetProgress();
 
     public float GetAccumulatedDistance();

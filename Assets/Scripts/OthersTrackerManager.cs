@@ -62,6 +62,9 @@ public class OthersTrackerManager : ITrackingSource
         trackerInfo.calibratedMaxDistance = (trackerInfo.handTrackerPosition - trackerInfo.baseTrackerPosition).magnitude;
     }
 
+    // todo: 別のインターフェースを用意して、このメソッドは削除する。
+    public void CalibrateCameraDirection() { }
+
     public float GetProgress()
     {
         TrackerInfo trackerInfo = othersTrackerInfo[playerID];

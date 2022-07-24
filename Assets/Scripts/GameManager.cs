@@ -17,7 +17,15 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 
     [SerializeField]
     [Tooltip("自分のプレイヤーID"), Range(1, 8)]
-    int myPlayerID;
+    private int myPlayerID;
+
+    [SerializeField]
+    [Tooltip("自分のアバターの種類"), Range(0, 2)]
+    private int MyAvatarType;
+
+    [SerializeField]
+    [Tooltip("相手のアバターの種類"), Range(0, 2)]
+    private int OthersAvatarType;
 
     private static readonly Vector3 PLAYER_INITIAL_SPAWN_POSITION = new Vector3(-2.366f, 0.909f, 0.980f);
     private static readonly Vector3 PLAYER_SPAWN_DISTANCE = new Vector3(-0.700f, 0f, 0f);
@@ -58,7 +66,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     {
         for (int i=0; i<PLAYER_SPAWN_NUMBER; i++)
         {
-            GameObject player = (GameObject)Resources.Load("Prefabs/Player");
+            GameObject player = (GameObject)Resources.Load((i+1 == myPlayerID) ? $"Prefabs/Player{MyAvatarType}" : $"Prefabs/Player{OthersAvatarType}");
             Vector3 spawnPosition = PLAYER_INITIAL_SPAWN_POSITION + PLAYER_SPAWN_DISTANCE * i;
             player.name = $"Player_{i + 1}";
             player = Instantiate(player, spawnPosition, PLAYER_SPAWN_DIRECTION) as GameObject;
@@ -71,7 +79,12 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 
                 MountPlayer(player);
 
-                DeleteHeadRendering(player);
+                // VRoidから生成したアバターの場合は頭のレンダリングを消せる
+                if (MyAvatarType == 0)
+                {
+                    DeleteHeadRendering(player);
+                    playerManager.isVRoidAvatar = true; // VRoidアバターのフラグをたてる。
+                }
 
                 player.gameObject.AddComponent<MyTrackerManager>();
                 playerManager.trackingSource = player.gameObject.GetComponent<MyTrackerManager>();
@@ -81,6 +94,11 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             }
             else
             {
+                if (OthersAvatarType == 0)
+                {
+                    playerManager.isVRoidAvatar = true;
+                }
+
                 playerManager.trackingSource = new OthersTrackerManager(i+1);
                 
                 GameObject canvas = player.transform.Find("Canvas").gameObject;

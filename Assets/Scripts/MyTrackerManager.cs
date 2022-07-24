@@ -36,13 +36,9 @@ public class MyTrackerManager : SingletonMonoBehaviour<MyTrackerManager>, ITrack
         float previousProgress = trackerInfo.progress;
         float progress = 1.0f - ((distance - trackerInfo.calibratedMinDistance) / (trackerInfo.calibratedMaxDistance - trackerInfo.calibratedMinDistance));
         if (progress < 0.0f)
-        {
             progress = 0.0f;
-        }
-        else if (progress > 1.0f)
-        {
+        if (progress > 1.0f)
             progress = 1.0f;
-        }
         trackerInfo.SetValue(TrackerInfoType.Progress, progress);
 
         // 移動量が設定した閾値以上の場合のみ総移動距離・総移動回数を更新
@@ -83,6 +79,11 @@ public class MyTrackerManager : SingletonMonoBehaviour<MyTrackerManager>, ITrack
     public void CalibrateMaxDistance()
     {
         trackerInfo.calibratedMaxDistance = (trackerInfo.handTrackerPosition - trackerInfo.baseTrackerPosition).magnitude;
+    }
+
+    public void CalibrateCameraDirection()
+    {
+        trackerInfo.SetValue(TrackerInfoType.BaseHMDDirection, trackerInfo.hmdDirection);
     }
 
     public float GetProgress()

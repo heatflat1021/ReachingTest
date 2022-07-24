@@ -4,7 +4,13 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
+    [HideInInspector]
     public bool isMyPlayerManager = false;
+
+    [HideInInspector]
+    public bool isVRoidAvatar = false;
+
+    [HideInInspector]
     public int playerID = 0;
 
     public int knifeID = 1;
@@ -99,6 +105,9 @@ public class PlayerManager : MonoBehaviour
 
         cameraRig.transform.position = this.transform.position;
         cameraRig.transform.position += new Vector3(cameraRig.transform.position.x - camera.transform.position.x, cameraRig.transform.position.y - camera.transform.position.y, cameraRig.transform.position.z - camera.transform.position.z) + StandardCameraRigPositionOffset;
+
+        Debug.Log("ON");
+        trackingSource.CalibrateCameraDirection();
     }
 
     private void InitializeHands()
@@ -134,7 +143,18 @@ public class PlayerManager : MonoBehaviour
 
     private void MoveHead(float direction)
     {
-        headDirection.transform.localRotation = Quaternion.Euler(new Vector3(0, -direction * 80, 0));
+        Vector3 headDirectionEuler;
+
+        // VRoidアバターでない場合は、頭の回転量を修正する必要がある。
+        if (isVRoidAvatar)
+        {
+            headDirectionEuler = new Vector3(0, -direction * 80, 0);
+        }
+        else
+        {
+            headDirectionEuler = new Vector3(0, -direction * 80, 0) + new Vector3(0, -90, -90);
+        }
+        headDirection.transform.localRotation = Quaternion.Euler(headDirectionEuler);
         Debug.Log(direction);
     }
 }

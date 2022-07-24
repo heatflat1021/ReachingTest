@@ -13,6 +13,7 @@ public enum TrackerInfoType
     AccumulatedProgress,
     BaseHMDDirection,
     HMDDirection,
+    SharpenedKnifeNumber,
 }
 
 public class TrackerInfo
@@ -26,6 +27,7 @@ public class TrackerInfo
     private float _accumulatedProgress;
     private float _baseHmdDirection;
     private float _hmdDirection;
+    private int _sharpenedKnifeNumber;
 
     public Queue<Vector3> baseTrackerPositionHistory;
     public Queue<Vector3> handTrackerPositionHistory;
@@ -90,7 +92,6 @@ public class TrackerInfo
     {
         get {
             float hmdDirectionDiff = _hmdDirection - _baseHmdDirection;
-            Debug.Log($"{_hmdDirection}, {_baseHmdDirection}, {hmdDirectionDiff}");
             
             if (1 < hmdDirectionDiff)
                 hmdDirectionDiff -= 2;
@@ -99,6 +100,14 @@ public class TrackerInfo
                 hmdDirectionDiff += 2;
 
             return hmdDirectionDiff;
+        }
+    }
+
+    public int sharpenedKnifeNumber
+    {
+        get
+        {
+            return _sharpenedKnifeNumber;
         }
     }
 
@@ -132,6 +141,9 @@ public class TrackerInfo
                 break;
             case TrackerInfoType.HMDDirection:
                 this._hmdDirection = System.Convert.ToSingle(value);
+                break;
+            case TrackerInfoType.SharpenedKnifeNumber:
+                this._sharpenedKnifeNumber = System.Convert.ToInt32(value);
                 break;
         }
     }

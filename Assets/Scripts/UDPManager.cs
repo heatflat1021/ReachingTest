@@ -54,6 +54,9 @@ public class UDPManager : MonoBehaviour
                     case TrackerInfoType.HMDDirection:
                         OthersTrackerManager.SetTrackerInfo(Int32.Parse(receivedData[0]), (TrackerInfoType)Enum.ToObject(typeof(TrackerInfoType), Int32.Parse(receivedData[1])), float.Parse(receivedData[2]));
                         break;
+                    case TrackerInfoType.SharpenedKnifeNumber:
+                        OthersTrackerManager.SetTrackerInfo(Int32.Parse(receivedData[0]), (TrackerInfoType)Enum.ToObject(typeof(TrackerInfoType), Int32.Parse(receivedData[1])), Int32.Parse(receivedData[2]));
+                        break;
                 }
                 Debug.Log(msg);
             }).AddTo(this);

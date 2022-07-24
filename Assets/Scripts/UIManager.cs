@@ -22,7 +22,7 @@ public class UIManager : MonoBehaviour
     Text durationText;
 
     [SerializeField]
-    Text timeText;
+    Text knifeText;
 
     [SerializeField]
     Text othersAccumulatedDistanceText;
@@ -67,9 +67,9 @@ public class UIManager : MonoBehaviour
         durationText.text = $"{seconds / 60}•ª {seconds % 60}•b";
     }
 
-    public void UpdateTime()
+    public void UpdateKnife(int knife)
     {
-        timeText.text = DateTime.Now.ToString("HH:mm:ss");
+        knifeText.text = knife.ToString();
     }
 
     public void UpdateOthersAccumulatedDistance(float othersAccumulatedDistance)

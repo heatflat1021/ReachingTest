@@ -21,4 +21,6 @@ public interface ITrackingSource
     public float GetAccumulatedProgress();
 
     public float GetHMDDirection();
+
+    public int GetSharpenedKnife();
 }

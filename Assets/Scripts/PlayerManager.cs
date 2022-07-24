@@ -36,6 +36,9 @@ public class PlayerManager : MonoBehaviour
     private GameObject rightHand;
     //public GameObject neck;
     private GameObject knife;
+    private int sharpenedKnifeNumber = 0;
+    private int particleShowTime = 0;
+    private const int ParticleShowUpperTime = 3000;
     private GameObject uiCanvas;
 
     private UIManager uiManager;
@@ -46,10 +49,11 @@ public class PlayerManager : MonoBehaviour
     void Start()
     {
         InitializeHands();
-        InitializeKnife();
+        InitializeKnife(1);
 
         GameObject canvas = transform.Find("Canvas").gameObject;
         uiManager = canvas.GetComponent<UIManager>();
+        uiManager.UpdateKnife(sharpenedKnifeNumber);
 
         GameObject udpManagerObject = GameObject.Find("UDPManager");
         udpManager = udpManagerObject.GetComponent<UDPManager>();
@@ -63,12 +67,6 @@ public class PlayerManager : MonoBehaviour
         float accumulatedProgress = trackingSource.GetAccumulatedProgress();
         float hmdDirection = trackingSource.GetHMDDirection();
 
-        if (accumulatedProgress > 10)
-        {
-            GameObject particle = knife.transform.Find("Particle").gameObject;
-            particle.SetActive(true);
-        }
-
         // アバターの操作
         MoveHands(progress);
         MoveKnife(progress);
@@ -76,6 +74,26 @@ public class PlayerManager : MonoBehaviour
 
         if (isMyPlayerManager)
         {
+            // ナイフ関連の処理
+            KnifeManager knifeManager = knife.GetComponent<KnifeManager>();
+            knifeManager.UpdateAccumulatedProgress(accumulatedProgress);
+            if (knifeManager.IsSharpened())
+            {
+                if (!knifeManager.updatedUI)
+                {
+                    uiManager.UpdateKnife(++sharpenedKnifeNumber);
+                    knifeManager.updatedUI = true;
+                }
+
+                if (knifeManager.IsShownEnough)
+                {
+                    Destroy(knife);
+                    InitializeKnife(2);
+                    knifeManager = knife.GetComponent<KnifeManager>();
+                    knifeManager.SetStartAccumulatedProgress(accumulatedProgress);
+                }
+            }
+
             // UIの更新
             int nextOtherPlayerID = ((playerID + 1) <= GameManager.Instance.PlayerSpawnNumber) ? (playerID+1) : (playerID + 1) % GameManager.Instance.PlayerSpawnNumber;
             TrackerInfo nextOthersTrackerInfo = OthersTrackerManager.GetTrackerInfo(nextOtherPlayerID);
@@ -83,7 +101,6 @@ public class PlayerManager : MonoBehaviour
             uiManager.UpdateAccumulatedDistance(accumulatedDistance);
             uiManager.UpdateAccumulatedProgress(accumulatedProgress);
             uiManager.UpdateDuration();
-            uiManager.UpdateTime();
             uiManager.UpdateOthersAccumulatedDistance(nextOthersTrackerInfo.accumulatedDistance);
             uiManager.UpdateOthersAccumulatedProgress(nextOthersTrackerInfo.accumulatedProgress);
 
@@ -92,6 +109,7 @@ public class PlayerManager : MonoBehaviour
             udpManager.Send(playerID + ":" + (int)TrackerInfoType.AccumulatedDistance + ":" + accumulatedDistance);
             udpManager.Send(playerID + ":" + (int)TrackerInfoType.AccumulatedProgress + ":" + accumulatedProgress);
             udpManager.Send(playerID + ":" + (int)TrackerInfoType.HMDDirection + ":" + hmdDirection);
+            udpManager.Send(playerID + ":" + (int)TrackerInfoType.SharpenedKnifeNumber + ":" + sharpenedKnifeNumber);
         }
     }
 
@@ -106,7 +124,6 @@ public class PlayerManager : MonoBehaviour
         cameraRig.transform.position = this.transform.position;
         cameraRig.transform.position += new Vector3(cameraRig.transform.position.x - camera.transform.position.x, cameraRig.transform.position.y - camera.transform.position.y, cameraRig.transform.position.z - camera.transform.position.z) + StandardCameraRigPositionOffset;
 
-        Debug.Log("ON");
         trackingSource.CalibrateCameraDirection();
     }
 
@@ -120,9 +137,9 @@ public class PlayerManager : MonoBehaviour
         hands.transform.localRotation = Quaternion.Euler(InitialHandsRotation);
     }
 
-    private void InitializeKnife()
+    private void InitializeKnife(int id)
     {
-        knife = (GameObject)Resources.Load($"Prefabs/CookKnife_{knifeID}");
+        knife = (GameObject)Resources.Load($"Prefabs/CookKnife_{id}");
         Vector3 spawnPosition = rightHand.transform.position;
         knife.name = $"knife_{knifeID}";
         knife = Instantiate(knife, spawnPosition, Quaternion.identity) as GameObject;
@@ -155,6 +172,5 @@ public class PlayerManager : MonoBehaviour
             headDirectionEuler = new Vector3(0, -direction * 80, 0) + new Vector3(0, -90, -90);
         }
         headDirection.transform.localRotation = Quaternion.Euler(headDirectionEuler);
-        Debug.Log(direction);
     }
 }

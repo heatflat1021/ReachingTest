@@ -89,6 +89,12 @@ public class OthersTrackerManager : ITrackingSource
         return trackerInfo.hmdDirection;
     }
 
+    public int GetSharpenedKnife()
+    {
+        TrackerInfo trackerInfo = othersTrackerInfo[playerID];
+        return trackerInfo.sharpenedKnifeNumber;
+    }
+
     private Vector3 Clone(Vector3 vector3)
     {
         return new Vector3(vector3.x, vector3.y, vector3.z);

@@ -106,6 +106,11 @@ public class MyTrackerManager : SingletonMonoBehaviour<MyTrackerManager>, ITrack
         return trackerInfo.hmdDirection;
     }
 
+    public int GetSharpenedKnife()
+    {
+        return 99;
+    }
+
     private Vector3 Clone(Vector3 vector3)
     {
         return new Vector3(vector3.x, vector3.y, vector3.z);

@@ -21,7 +21,7 @@ public class PlayerManager : MonoBehaviour
     [SerializeField]
     GameObject headDirection;
 
-    private readonly Vector3 InitialHandsPosition = new Vector3(0, 0, 1.42f);
+    private readonly Vector3 InitialHandsPosition = new Vector3(0, 0.12f, 1.42f);
     private readonly Vector3 InitialHandsRotation = new Vector3(17.3f, 0, 0);
     private readonly Vector3 InitialKnifePosition = new Vector3(0.19f, 0.04f, 1.5f);
     private readonly Vector3 InitialKnifeRotation = new Vector3(-90, -90, -180);

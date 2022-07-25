@@ -17493,8 +17493,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PLAYER_SPAWN_NUMBER: 2
   myPlayerID: 1
-  MyAvatarType: 2
-  OthersAvatarType: 0
+  MyAvatarType: 1
+  OthersAvatarType: 2
 --- !u!4 &2071126602
 Transform:
   m_ObjectHideFlags: 0

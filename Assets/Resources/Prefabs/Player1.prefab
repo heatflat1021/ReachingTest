@@ -6352,13 +6352,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8337892953472193900}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0.7461058, y: 0.057751223, z: 0.6600985, w: 0.0652759}
   m_LocalPosition: {x: 0.1, y: 0, z: 0}
   m_LocalScale: {x: 0.9984649, y: 0.9984649, z: 0.9984649}
   m_Children: []
   m_Father: {fileID: 6440801990300653143}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -170, y: 83, z: 0}
 --- !u!1 &8349719368477985893
 GameObject:
   m_ObjectHideFlags: 0
@@ -6668,7 +6668,7 @@ MonoBehaviour:
       bones: []
       target: {fileID: 8939459107787335689}
       positionWeight: 1
-      rotationWeight: 0.1
+      rotationWeight: 1
       shoulderRotationWeight: 1
       shoulderRotationMode: 0
       shoulderTwistWeight: 1
@@ -6679,7 +6679,7 @@ MonoBehaviour:
       swivelOffset: 0
       wristToPalmAxis: {x: -1, y: -0, z: -0}
       palmToThumbAxis: {x: -0, y: -0, z: -1}
-      armLengthMlp: 1
+      armLengthMlp: 1.3
       stretchCurve:
         serializedVersion: 2
         m_Curve: []
@@ -6690,7 +6690,7 @@ MonoBehaviour:
       bones: []
       target: {fileID: 8718394776891756502}
       positionWeight: 1
-      rotationWeight: 0.1
+      rotationWeight: 1
       shoulderRotationWeight: 1
       shoulderRotationMode: 0
       shoulderTwistWeight: 1
@@ -6701,7 +6701,7 @@ MonoBehaviour:
       swivelOffset: 0
       wristToPalmAxis: {x: -1, y: -0, z: -0}
       palmToThumbAxis: {x: 0, y: 0, z: 1}
-      armLengthMlp: 1
+      armLengthMlp: 1.3
       stretchCurve:
         serializedVersion: 2
         m_Curve: []
@@ -6936,13 +6936,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8594141449677386419}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0.66317767, y: 0.14067924, z: -0.7237316, w: 0.12890875}
   m_LocalPosition: {x: -0.12, y: 0, z: 0}
   m_LocalScale: {x: 0.99847746, y: 0.99847746, z: 0.99847746}
   m_Children: []
   m_Father: {fileID: 6440801990300653143}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 158, y: 95, z: 0}
 --- !u!1 &8599970159315878570
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,7 +13,6 @@ public class PlayerManager : MonoBehaviour
     [HideInInspector]
     public int playerID = 0;
 
-    public int knifeID = 1;
     public ITrackingSource trackingSource;
     public IScoreManager scoreManager;
 
@@ -47,7 +46,7 @@ public class PlayerManager : MonoBehaviour
     void Start()
     {
         InitializeHands();
-        InitializeKnife(1);
+        InitializeKnife();
 
         GameObject canvas = transform.Find("Canvas").gameObject;
         uiManager = canvas.GetComponent<UIManager>();
@@ -86,7 +85,7 @@ public class PlayerManager : MonoBehaviour
                 if (knifeManager.IsShownEnough)
                 {
                     Destroy(knife);
-                    InitializeKnife(2);
+                    InitializeKnife();
                     knifeManager = knife.GetComponent<KnifeManager>();
                     knifeManager.SetStartAccumulatedProgress(accumulatedProgress);
                 }
@@ -135,11 +134,12 @@ public class PlayerManager : MonoBehaviour
         hands.transform.localRotation = Quaternion.Euler(InitialHandsRotation);
     }
 
-    private void InitializeKnife(int id)
+    private void InitializeKnife()
     {
-        knife = (GameObject)Resources.Load($"Prefabs/CookKnife_{id}");
+        int knifeId = Random.Range(1, 3 + 1);
+        knife = (GameObject)Resources.Load($"Prefabs/CookKnife_{knifeId}");
         Vector3 spawnPosition = rightHand.transform.position;
-        knife.name = $"knife_{knifeID}";
+        knife.name = $"knife_{knifeId}";
         knife = Instantiate(knife, spawnPosition, Quaternion.identity) as GameObject;
         knife.transform.SetParent(this.transform, false);
         knife.transform.localPosition = InitialKnifePosition;

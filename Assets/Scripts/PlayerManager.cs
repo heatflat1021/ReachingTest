@@ -24,6 +24,7 @@ public class PlayerManager : MonoBehaviour
     private readonly Vector3 InitialHandsRotation = new Vector3(17.3f, 0, 0);
     private readonly Vector3 InitialKnifePosition = new Vector3(0.19f, 0.04f, 1.5f);
     private readonly Vector3 InitialKnifeRotation = new Vector3(-90, -90, -180);
+    private readonly Vector3 InitialHeadPosition = new Vector3(0, 1.5f, 0.5f);
 
     private const int StandardCameraRigDirectionOffsetY = -720;
     private readonly Vector3 StandardCameraRigPositionOffset = new Vector3(0, 0.5f, -0.2f);
@@ -67,7 +68,7 @@ public class PlayerManager : MonoBehaviour
         // アバターの操作
         MoveHands(progress);
         MoveKnife(progress);
-        MoveHead(hmdDirection);
+        MoveHead(progress, hmdDirection);
 
         if (isMyPlayerManager)
         {
@@ -156,8 +157,10 @@ public class PlayerManager : MonoBehaviour
         knife.transform.localPosition = InitialKnifePosition + MaxMoveDistance * progress;
     }
 
-    private void MoveHead(float direction)
+    private void MoveHead(float progress, float direction)
     {
+        headDirection.transform.localPosition = InitialHeadPosition + MaxMoveDistance * progress * 0.3f;
+
         Vector3 headDirectionEuler;
 
         // VRoidアバターでない場合は、頭の回転量を修正する必要がある。

@@ -43,6 +43,8 @@ public class PlayerManager : MonoBehaviour
 
     private UDPManager udpManager;
 
+    private int nextKnifeID = 1;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -137,14 +139,21 @@ public class PlayerManager : MonoBehaviour
 
     private void InitializeKnife()
     {
-        int knifeId = Random.Range(1, 3 + 1);
-        knife = (GameObject)Resources.Load($"Prefabs/CookKnife_{knifeId}");
+        // int knifeId = Random.Range(1, 3 + 1);
+        knife = (GameObject)Resources.Load($"Prefabs/CookKnife_{nextKnifeID}");
         Vector3 spawnPosition = rightHand.transform.position;
-        knife.name = $"knife_{knifeId}";
+        knife.name = $"knife_{nextKnifeID}";
         knife = Instantiate(knife, spawnPosition, Quaternion.identity) as GameObject;
         knife.transform.SetParent(this.transform, false);
         knife.transform.localPosition = InitialKnifePosition;
         knife.transform.localRotation = Quaternion.Euler(InitialKnifeRotation);
+        nextKnifeID++;
+
+        // デモ用のコード
+        if (nextKnifeID == 4)
+        {
+            nextKnifeID -= 3;
+        }
     }
 
     private void MoveHands(float progress)

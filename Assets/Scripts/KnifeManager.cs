@@ -20,6 +20,8 @@ public class KnifeManager : MonoBehaviour
 
     private bool isShownEnough = false;
 
+    private Material[] materials;
+
     public bool IsShownEnough
     {
         get
@@ -36,17 +38,21 @@ public class KnifeManager : MonoBehaviour
     void Start()
     {
         particle.SetActive(false);
+
+        SetSabiMaterial();
     }
 
     // Update is called once per frame
     void Update()
     {
+
         if (isSharpened)
         {
             if (isImmediatelyAfterSharpened)
             {
                 PlaySoundKira();
                 isImmediatelyAfterSharpened = false;
+                SetSharpenedMaterial();
             }
 
             if (ParticleShowTime < shownTime++)
@@ -80,5 +86,18 @@ public class KnifeManager : MonoBehaviour
     {
         AudioSource audioSource = gameObject.GetComponent<AudioSource>();
         audioSource.Play();
+    }
+
+    private void SetSabiMaterial()
+    {
+        MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
+        materials = meshRenderer.materials; // ã‘‚«‚³‚ê‚é‘O‚Ématerials‚É•Û‘¶‚µ‚Ä‚¨‚­
+        meshRenderer.material = materials[1];
+    }
+
+    private void SetSharpenedMaterial()
+    {
+        MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
+        meshRenderer.material = materials[0];
     }
 }

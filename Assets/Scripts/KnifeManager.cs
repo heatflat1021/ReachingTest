@@ -7,7 +7,7 @@ public class KnifeManager : MonoBehaviour
     [SerializeField]
     private GameObject particle;
 
-    private const int ParticleShowTime = 300;
+    private const int ParticleShowTime = 150;
 
     [SerializeField]
     private float requiredProgress;

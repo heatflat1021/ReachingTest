@@ -113,7 +113,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   particle: {fileID: 7517820044380209082}
-  requiredProgress: 15
+  requiredProgress: 5
   updatedUI: 0
 --- !u!82 &8971027109055219
 AudioSource:

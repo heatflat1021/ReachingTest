@@ -4917,9 +4917,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e06ca59b8fce51d42844fd7994891d54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sabi: {fileID: 2100000, guid: 92be41c9e4c7a954fb294259d368e74d, type: 2}
   particle: {fileID: 3991583415059431314}
-  requiredProgress: 10
+  requiredProgress: 3
   updatedUI: 0
 --- !u!82 &7479274466904874504
 AudioSource:
@@ -5029,7 +5028,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e06ca59b8fce51d42844fd7994891d54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sabi: {fileID: 0}
   particle: {fileID: 3991583415059431314}
   requiredProgress: 20
   updatedUI: 0

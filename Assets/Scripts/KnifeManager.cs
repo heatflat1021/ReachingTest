@@ -7,7 +7,7 @@ public class KnifeManager : MonoBehaviour
     [SerializeField]
     private GameObject particle;
 
-    private const int ParticleShowTime = 400;
+    private const int ParticleShowTime = 300;
 
     [SerializeField]
     private float requiredProgress;
@@ -16,7 +16,10 @@ public class KnifeManager : MonoBehaviour
 
     private bool isSharpened;
 
+    private bool isImmediatelyAfterSharpened = true;
+
     private bool isShownEnough = false;
+
     public bool IsShownEnough
     {
         get
@@ -40,6 +43,12 @@ public class KnifeManager : MonoBehaviour
     {
         if (isSharpened)
         {
+            if (isImmediatelyAfterSharpened)
+            {
+                PlaySoundKira();
+                isImmediatelyAfterSharpened = false;
+            }
+
             if (ParticleShowTime < shownTime++)
             {
                 isShownEnough = true;
@@ -65,5 +74,11 @@ public class KnifeManager : MonoBehaviour
     public bool IsSharpened()
     {
         return isSharpened;
+    }
+
+    private void PlaySoundKira()
+    {
+        AudioSource audioSource = gameObject.GetComponent<AudioSource>();
+        audioSource.Play();
     }
 }

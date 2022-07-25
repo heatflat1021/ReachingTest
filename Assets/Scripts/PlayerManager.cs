@@ -37,8 +37,6 @@ public class PlayerManager : MonoBehaviour
     //public GameObject neck;
     private GameObject knife;
     private int sharpenedKnifeNumber = 0;
-    private int particleShowTime = 0;
-    private const int ParticleShowUpperTime = 3000;
     private GameObject uiCanvas;
 
     private UIManager uiManager;

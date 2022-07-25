@@ -165,11 +165,11 @@ public class PlayerManager : MonoBehaviour
         // VRoidアバターでない場合は、頭の回転量を修正する必要がある。
         if (isVRoidAvatar)
         {
-            headDirectionEuler = new Vector3(0, -direction * 80, 0);
+            headDirectionEuler = new Vector3(0, -direction * 180, 0);
         }
         else
         {
-            headDirectionEuler = new Vector3(0, -direction * 80, 0) + new Vector3(0, -90, -90);
+            headDirectionEuler = new Vector3(0, -direction * 180, 0) + new Vector3(0, -90, -90);
         }
         headDirection.transform.localRotation = Quaternion.Euler(headDirectionEuler);
     }

@@ -5,32 +5,18 @@ using UnityEngine;
 public class GameManager : SingletonMonoBehaviour<GameManager>
 {
     [SerializeField]
-    [Tooltip("プレイヤーの数"), Range(1, 8)]
-    private int PLAYER_SPAWN_NUMBER;
-    public int PlayerSpawnNumber
-    {
-        get
-        {
-            return PLAYER_SPAWN_NUMBER;
-        }
-    }
+    private List<GameObject> players;
 
     [SerializeField]
-    [Tooltip("自分のプレイヤーID"), Range(1, 8)]
+    [Tooltip("自分のプレイヤーID"), Range(0, 4)]
     private int myPlayerID;
 
     [SerializeField]
-    [Tooltip("自分のアバターの種類"), Range(0, 2)]
-    private int MyAvatarType;
-
-    [SerializeField]
-    [Tooltip("相手のアバターの種類"), Range(0, 2)]
-    private int OthersAvatarType;
+    GameObject udpManagerObject;
 
     private static readonly Vector3 PLAYER_INITIAL_SPAWN_POSITION = new Vector3(-2.366f, 0.909f, 0.980f);
     private static readonly Vector3 PLAYER_SPAWN_DISTANCE = new Vector3(-0.700f, 0f, 0f);
     private static readonly Quaternion PLAYER_SPAWN_DIRECTION = Quaternion.AngleAxis(180, Vector3.up);
-    private static readonly Vector3 MIRROR_RELATIVE_POSITION = new Vector3(0.5f, 2.2f, 0);
 
     private GameObject myPlayer;
     private PlayerManager myPlayerManager;
@@ -44,11 +30,11 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     {
         if (Input.GetKey(KeyCode.DownArrow))
         {
-            myPlayerManager.trackingSource.CalibrateMaxDistance();
+            myPlayerManager.manipulationDataSource.CalibrateMaxDistance();
         }
         if (Input.GetKey(KeyCode.UpArrow))
         {
-            myPlayerManager.trackingSource.CalibrateMinDistance();
+            myPlayerManager.manipulationDataSource.CalibrateMinDistance();
         }
         if (Input.GetKeyUp(KeyCode.R))
         {
@@ -56,7 +42,6 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         }
         if (Input.GetKeyUp(KeyCode.C))
         {
-            GameObject udpManagerObject = GameObject.Find("UDPManager");
             UDPManager udpManager = udpManagerObject.GetComponent<UDPManager>();
             udpManager.udpCommunicationFlag = true;
         }
@@ -64,50 +49,49 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 
     private void SpawnPlayers()
     {
-        for (int i=0; i<PLAYER_SPAWN_NUMBER; i++)
+        for (int playerId=0; playerId<players.Count; playerId++)
         {
-            GameObject player = (GameObject)Resources.Load((i+1 == myPlayerID) ? $"Prefabs/Player{MyAvatarType}" : $"Prefabs/Player{OthersAvatarType}");
-            Vector3 spawnPosition = PLAYER_INITIAL_SPAWN_POSITION + PLAYER_SPAWN_DISTANCE * i;
-            player.name = $"Player_{i + 1}";
+            GameObject player = players[playerId];
+            Vector3 spawnPosition = PLAYER_INITIAL_SPAWN_POSITION + PLAYER_SPAWN_DISTANCE * playerId;
             player = Instantiate(player, spawnPosition, PLAYER_SPAWN_DIRECTION) as GameObject;
             PlayerManager playerManager = player.GetComponent<PlayerManager>();
-            playerManager.playerID = i + 1;
+            playerManager.playerID = playerId;
+            playerManager.manipulationDataSource = new ManipulationDataSource(playerId);
 
-            if (i+1 == myPlayerID)
+            if (playerId == myPlayerID)
             {
                 playerManager.isMyPlayerManager = true;
 
                 MountPlayer(player);
 
-                // VRoidから生成したアバターの場合は頭のレンダリングを消せる
-                if (MyAvatarType == 0)
-                {
-                    DeleteHeadRendering(player);
-                    playerManager.isVRoidAvatar = true; // VRoidアバターのフラグをたてる。
-                }
 
-                player.gameObject.AddComponent<MyTrackerManager>();
-                playerManager.trackingSource = player.gameObject.GetComponent<MyTrackerManager>();
+                //player.gameObject.AddComponent<MyTrackerManager>();
+                //playerManager.trackingSource = player.gameObject.GetComponent<MyTrackerManager>();
 
                 myPlayer = player;
                 myPlayerManager = playerManager;
+
+                // VRoidから生成したアバターの場合は頭のレンダリングを消すことができる
+                if (playerManager.IsVRoidAvatar)
+                {
+                    DeleteVRoidHeadRendering(player);
+                }
             }
             else
             {
-                if (OthersAvatarType == 0)
-                {
-                    playerManager.isVRoidAvatar = true;
-                }
-
-                playerManager.trackingSource = new OthersTrackerManager(i+1);
                 
+                //playerManager.trackingSource = new OthersTrackerManager(playerId);
+
                 GameObject canvas = player.transform.Find("Canvas").gameObject;
                 canvas.SetActive(false);
             }
 
-            player.transform.localPosition = spawnPosition;
-        }
+            ManipulationDataSource m = new ManipulationDataSource(playerId);
+            playerManager.manipulationDataSource = m;
 
+            player.transform.localPosition = spawnPosition;
+
+        }
     }
 
     private void MountPlayer(GameObject mountTarget)
@@ -120,7 +104,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         cameraRig.transform.localRotation = Quaternion.identity;
     }
 
-    private void DeleteHeadRendering(GameObject player)
+    private void DeleteVRoidHeadRendering(GameObject player)
     {
         GameObject face = player.transform.Find("Avatar/Face").gameObject;
         SkinnedMeshRenderer faceRenderer = face.GetComponent<SkinnedMeshRenderer>();
@@ -128,5 +112,10 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         GameObject hair = player.transform.Find("Avatar/Hair").gameObject;
         SkinnedMeshRenderer hairRenderer = hair.GetComponent<SkinnedMeshRenderer>();
         hairRenderer.enabled = false;
+    }
+
+    public int PlayersCount()
+    {
+        return players.Count;
     }
 }

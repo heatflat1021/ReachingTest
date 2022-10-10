@@ -4121,8 +4121,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7de7b01ccc33e884998748b14e844673, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isVRoidAvatar: 1
   isMyPlayerManager: 0
-  isVRoidAvatar: 0
   playerID: 0
   headDirection: {fileID: 1515418438780544341}
 --- !u!1 &7673807297160413535

@@ -15963,10 +15963,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f28a6d9790c53243a3a1601b0164a31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myIPv4: 192.168.10.101
-  otherIPv4: 192.168.10.102
-  mySenderPort: 22223
-  otherReceiverPort: 22222
+  myIPv4: 192.168.10.102
+  otherIPv4: 192.168.10.101
+  mySenderPort: 22222
+  otherReceiverPort: 22223
   udpCommunicationFlag: 0
 --- !u!4 &1871084913
 Transform:
@@ -17491,10 +17491,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d52e1cdaa738d9a48ab3d8c407730d9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PLAYER_SPAWN_NUMBER: 2
+  players:
+  - {fileID: 3613150814524855702, guid: 9b3555c60ad7b2447ac0442b610fe56f, type: 3}
+  - {fileID: 4628257865701303415, guid: 7143b5ef76fad4a4081d8c2bec85bd61, type: 3}
   myPlayerID: 1
-  MyAvatarType: 1
-  OthersAvatarType: 2
+  udpManagerObject: {fileID: 1871084911}
 --- !u!4 &2071126602
 Transform:
   m_ObjectHideFlags: 0

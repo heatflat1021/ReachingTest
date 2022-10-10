@@ -1,20 +1,29 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
+    [SerializeField]
+    private bool isVRoidAvatar;
+    public  bool IsVRoidAvatar
+    {
+        get
+        {
+            return isVRoidAvatar;
+        }
+    }
+
     [HideInInspector]
     public bool isMyPlayerManager = false;
 
     [HideInInspector]
-    public bool isVRoidAvatar = false;
-
-    [HideInInspector]
     public int playerID = 0;
 
-    public ITrackingSource trackingSource;
-    public IScoreManager scoreManager;
+    //public ITrackingSource trackingSource;
+    public ManipulationDataSource manipulationDataSource;
+    //public IScoreManager scoreManager;
 
     [Space(20)]
     [SerializeField]
@@ -43,7 +52,8 @@ public class PlayerManager : MonoBehaviour
 
     private UDPManager udpManager;
 
-    private int nextKnifeID = 1;
+    private string directoryPath;
+    private string filePath;
 
     // Start is called before the first frame update
     void Start()
@@ -51,21 +61,35 @@ public class PlayerManager : MonoBehaviour
         InitializeHands();
         InitializeKnife();
 
+        manipulationDataSource = new ManipulationDataSource(this.playerID);
+
         GameObject canvas = transform.Find("Canvas").gameObject;
         uiManager = canvas.GetComponent<UIManager>();
         uiManager.UpdateKnife(sharpenedKnifeNumber);
 
         GameObject udpManagerObject = GameObject.Find("UDPManager");
         udpManager = udpManagerObject.GetComponent<UDPManager>();
+
+        if (isMyPlayerManager)
+        {
+            int experimentParticipantsID = 99; // todo:被験者ID機能の実装
+            directoryPath = $"{Application.dataPath}/Data/ExperimentPaticipant{experimentParticipantsID}";
+            Logger.CreateDirectory(directoryPath);
+            DateTime timestamp = DateTime.Now;
+            filePath = $"{directoryPath}/{timestamp}.csv";
+            Logger.CreateFile(filePath);
+            Logger.Append(filePath, Logger.FormHeader());
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        float progress = trackingSource.GetProgress();
-        float accumulatedDistance = trackingSource.GetAccumulatedDistance();
-        float accumulatedProgress = trackingSource.GetAccumulatedProgress();
-        float hmdDirection = trackingSource.GetHMDDirection();
+        ManipulationData manipulationData = manipulationDataSource.GetManipulationData();
+        float progress = manipulationData.progress;
+        float accumulatedDistance = manipulationData.accumulatedDistance;
+        float accumulatedProgress = manipulationData.accumulatedProgress;
+        float hmdDirection = manipulationData.hmdDirection;
 
         // アバターの操作
         MoveHands(progress);
@@ -95,21 +119,24 @@ public class PlayerManager : MonoBehaviour
             }
 
             // UIの更新
-            int nextOtherPlayerID = ((playerID + 1) <= GameManager.Instance.PlayerSpawnNumber) ? (playerID+1) : (playerID + 1) % GameManager.Instance.PlayerSpawnNumber;
+            int nextOtherPlayerID = ((playerID + 1) <= GameManager.Instance.PlayersCount()) ? (playerID+1) : (playerID + 1) % GameManager.Instance.PlayersCount();
             TrackerInfo nextOthersTrackerInfo = OthersTrackerManager.GetTrackerInfo(nextOtherPlayerID);
             uiManager.UpdateProgress(progress);
             uiManager.UpdateAccumulatedDistance(accumulatedDistance);
             uiManager.UpdateAccumulatedProgress(accumulatedProgress);
             uiManager.UpdateDuration();
-            uiManager.UpdateOthersAccumulatedDistance(nextOthersTrackerInfo.accumulatedDistance);
-            uiManager.UpdateOthersAccumulatedProgress(nextOthersTrackerInfo.accumulatedProgress);
+            //uiManager.UpdateOthersAccumulatedDistance(nextOthersTrackerInfo.accumulatedDistance);
+            //uiManager.UpdateOthersAccumulatedProgress(nextOthersTrackerInfo.accumulatedProgress);
 
             // データの送信
-            udpManager.Send(playerID + ":" + (int)TrackerInfoType.Progress + ":" + progress);
-            udpManager.Send(playerID + ":" + (int)TrackerInfoType.AccumulatedDistance + ":" + accumulatedDistance);
-            udpManager.Send(playerID + ":" + (int)TrackerInfoType.AccumulatedProgress + ":" + accumulatedProgress);
-            udpManager.Send(playerID + ":" + (int)TrackerInfoType.HMDDirection + ":" + hmdDirection);
-            udpManager.Send(playerID + ":" + (int)TrackerInfoType.SharpenedKnifeNumber + ":" + sharpenedKnifeNumber);
+            udpManager.Send(playerID, UDPDataType.Progress, progress.ToString());
+            udpManager.Send(playerID, UDPDataType.AccumulatedProgress, accumulatedProgress.ToString());
+            udpManager.Send(playerID, UDPDataType.AccumulatedDistance, accumulatedDistance.ToString());
+            udpManager.Send(playerID, UDPDataType.HMDDirection, hmdDirection.ToString());
+            udpManager.Send(playerID, UDPDataType.SharpenedKnifeNumber, sharpenedKnifeNumber.ToString());
+
+            // ログ
+            Logger.Append(filePath, Logger.FormBodyLine(manipulationData));
         }
     }
 
@@ -124,7 +151,8 @@ public class PlayerManager : MonoBehaviour
         cameraRig.transform.position = this.transform.position;
         cameraRig.transform.position += new Vector3(cameraRig.transform.position.x - camera.transform.position.x, cameraRig.transform.position.y - camera.transform.position.y, cameraRig.transform.position.z - camera.transform.position.z) + StandardCameraRigPositionOffset;
 
-        trackingSource.CalibrateCameraDirection();
+        //manipulationDataSource.CalibrateCameraDirection(); // <= これいる？
+        //trackingSource.CalibrateCameraDirection();
     }
 
     private void InitializeHands()
@@ -139,21 +167,14 @@ public class PlayerManager : MonoBehaviour
 
     private void InitializeKnife()
     {
-        // int knifeId = Random.Range(1, 3 + 1);
-        knife = (GameObject)Resources.Load($"Prefabs/CookKnife_{nextKnifeID}");
+        int knifeID = UnityEngine.Random.Range(1, 3 + 1);
+        knife = (GameObject)Resources.Load($"Prefabs/CookKnife_{knifeID}");
         Vector3 spawnPosition = rightHand.transform.position;
-        knife.name = $"knife_{nextKnifeID}";
+        knife.name = $"knife_{knifeID}";
         knife = Instantiate(knife, spawnPosition, Quaternion.identity) as GameObject;
         knife.transform.SetParent(this.transform, false);
         knife.transform.localPosition = InitialKnifePosition;
         knife.transform.localRotation = Quaternion.Euler(InitialKnifeRotation);
-        nextKnifeID++;
-
-        // デモ用のコード
-        if (nextKnifeID == 4)
-        {
-            nextKnifeID -= 3;
-        }
     }
 
     private void MoveHands(float progress)

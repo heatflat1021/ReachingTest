@@ -1,12 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
 using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Text;
 using UniRx;
 
@@ -43,22 +38,12 @@ public class UDPManager : MonoBehaviour
         udpClient.BeginReceive(OnReceived, udpClient);
         subject
             .ObserveOnMainThread()
-            .Subscribe(msg => {
-                string[] receivedData = msg.Split(':');
-                switch ((TrackerInfoType)Enum.ToObject(typeof(TrackerInfoType), Int32.Parse(receivedData[1])))
-                {
-                    // float‚É•ÏŠ·‚·‚éƒpƒ^[ƒ“
-                    case TrackerInfoType.Progress:
-                    case TrackerInfoType.AccumulatedDistance:
-                    case TrackerInfoType.AccumulatedProgress:
-                    case TrackerInfoType.HMDDirection:
-                        OthersTrackerManager.SetTrackerInfo(Int32.Parse(receivedData[0]), (TrackerInfoType)Enum.ToObject(typeof(TrackerInfoType), Int32.Parse(receivedData[1])), float.Parse(receivedData[2]));
-                        break;
-                    case TrackerInfoType.SharpenedKnifeNumber:
-                        OthersTrackerManager.SetTrackerInfo(Int32.Parse(receivedData[0]), (TrackerInfoType)Enum.ToObject(typeof(TrackerInfoType), Int32.Parse(receivedData[1])), Int32.Parse(receivedData[2]));
-                        break;
-                }
-                Debug.Log(msg);
+            .Subscribe(receivedData => {
+                UDPData udpData = new UDPData(receivedData);
+                ManipulationDataSource.SetManipulationData(
+                    udpData.playerID,
+                    ManipulationData.FromUDPDataType(udpData.dataType).Value,
+                    udpData.data);
             }).AddTo(this);
 
     }
@@ -69,11 +54,14 @@ public class UDPManager : MonoBehaviour
 
     }
 
-    public void Send(string data)
+    public void Send(int playerID, UDPDataType udpDataType, string data)
     {
+        UDPData udpData = new UDPData(playerID, udpDataType, data);
+        string sendData = udpData.ParseToString();
+
         if (udpCommunicationFlag)
         {
-            var msg = Encoding.UTF8.GetBytes(data);
+            var msg = Encoding.UTF8.GetBytes(sendData);
             udpClient.SendAsync(msg, msg.Length);
         }
     }

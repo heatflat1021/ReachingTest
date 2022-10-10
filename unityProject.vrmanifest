@@ -5,7 +5,7 @@
       "app_key": "application.generated.unity.reachingtest.exe",
       "launch_type": "url",
       "url": "steam://launch/",
-      "action_manifest_path": "C:\\Users\\NEDO-ASUS3060\\Documents\\UnityProjects\\ReachingTest\\Assets\\StreamingAssets\\SteamVR\\actions.json",
+      "action_manifest_path": "C:\\Users\\GuestUser\\Documents\\UnityProjects\\ReachingTest\\Assets\\StreamingAssets\\SteamVR\\actions.json",
       "strings": {
         "en_us": {
           "name": "ReachingTest [Testing]"
